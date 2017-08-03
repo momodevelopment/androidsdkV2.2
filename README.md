@@ -23,7 +23,7 @@ allprojects {
 Add the dependency:
 ```
 dependencies {
-    compile 'com.github.momodevelopment:androidSdkV2.2-Beta:v2.2'
+    compile 'compile 'com.github.momodevelopment:androidsdkV2.2:v2.2'
 }
 ```
  
@@ -37,6 +37,15 @@ Confirm order Activity
 import vn.momo.momo_partner.AppMoMoLib;
 import vn.momo.momo_partner.MoMoParameterNameMap;
 
+private String amount = "10000";
+private String fee = "0";
+int environment = 0;//developer default
+private String merchantName = "CGV Cinemas";
+private String merchantCode = "CGV19072017";
+private String merchantNameLabel = "Nhà cung cấp";
+private String description = "Fast & Furious 8";
+private String MOMO_WEB_SDK_DEV = "http://10.10.10.171:8080/sdk/api/v1/payment/request";//debug
+    
 void onCreate(Bundle savedInstanceState) 
         AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT); // AppMoMoLib.ENVIRONMENT.PRODUCTION
 ```
@@ -46,7 +55,7 @@ void onCreate(Bundle savedInstanceState)
 Step 4. Get token & request payment
 ```
 //Get token through MoMo app 
-void requestToken() {
+private void requestPayment() {
         AppMoMoLib.getInstance().setAction(AppMoMoLib.ACTION.PAYMENT);
         AppMoMoLib.getInstance().setActionType(AppMoMoLib.ACTION_TYPE.GET_TOKEN);
         if (edAmount.getText().toString() != null && edAmount.getText().toString().trim().length() != 0)
@@ -63,25 +72,31 @@ void requestToken() {
         eventValue.put(MoMoParameterNamePayment.MERCHANT_NAME_LABEL, merchantNameLabel);
 
         //client call webview
-        eventValue.put(MoMoParameterNamePayment.REQUEST_ID, "uber-req-28nyli"+ System.currentTimeMillis());
-        eventValue.put(MoMoParameterNamePayment.PARTNER_CLIENT_ID, "Uberbjf7k9" +System.currentTimeMillis());
-        eventValue.put(MoMoParameterNamePayment.RETURN_URL, "https://momo.vn");
-        eventValue.put(MoMoParameterNamePayment.NOTIFY_URL, "https://momo.vn");
-        eventValue.put(MoMoParameterNamePayment.PARTNERT_CODE, "CGV19072017");
+        eventValue.put(MoMoParameterNamePayment.REQUEST_ID,  merchantCode+"-req-28nyli"+ System.currentTimeMillis());
+        eventValue.put(MoMoParameterNamePayment.PARTNER_CODE, "CGV19072017");
 
-        //client info custom parameter
-        JSONObject objExtra = new JSONObject();
+        JSONObject objExtraData = new JSONObject();
         try {
-            objExtra.put("mobile", "+840966132647");
-            objExtra.put("email", "momo-email@gmail.com");
-            objExtra.put("fullname", "SDK Team");
-            objExtra.put("lang", "en");
+            objExtraData.put("site_code", "008");
+            objExtraData.put("site_name", "CGV Cresent Mall");
+            objExtraData.put("screen_code", 0);
+            objExtraData.put("screen_name", "Special");
+            objExtraData.put("movie_name", "Kẻ Trộm Mặt Trăng 3");
+            objExtraData.put("movie_format", "2D");
+            objExtraData.put("ticket", "{\"ticket\":{\"01\":{\"type\":\"std\",\"price\":110000,\"qty\":3}}}");
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        eventValue.put(MoMoParameterNamePayment.EXTRA_DATA, objExtraData.toString());
+        eventValue.put(MoMoParameterNamePayment.REQUEST_TYPE, "payment");
+        eventValue.put(MoMoParameterNamePayment.LANGUAGE, "vi");
+        eventValue.put(MoMoParameterNamePayment.SUBMIT_URL_WEB, MOMO_WEB_SDK_DEV);
+        
 
-        eventValue.put(MoMoParameterNamePayment.EXTRA, objExtra);
+        eventValue.put(MoMoParameterNamePayment.EXTRA, "");
         AppMoMoLib.getInstance().requestMoMoCallBack(this, eventValue);
+
+
     } 
 //Get token callback from MoMo app an submit to server side 
 void onActivityResult(int requestCode, int resultCode, Intent data) {
