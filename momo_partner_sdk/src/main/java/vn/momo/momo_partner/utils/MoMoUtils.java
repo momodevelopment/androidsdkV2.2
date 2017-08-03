@@ -54,30 +54,6 @@ public class MoMoUtils {
         }
         return "0.0.0.0";
     }
-    public static String encryptRSA(String source, String publicKey) {
-        byte[] publicKeyByte = Base64.decode(publicKey, 2);
-        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyByte);
-        String encrypted = "";
-        try {
-            KeyFactory e = KeyFactory.getInstance("RSA");
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-            cipher.init(1, e.generatePublic(keySpec));
-            encrypted = Base64.encodeToString(cipher.doFinal(source.getBytes()), 2);
-        } catch (NoSuchAlgorithmException var7) {
-            var7.printStackTrace();
-        } catch (NoSuchPaddingException var8) {
-            var8.printStackTrace();
-        } catch (InvalidKeySpecException var9) {
-            var9.printStackTrace();
-        } catch (InvalidKeyException var10) {
-            var10.printStackTrace();
-        } catch (BadPaddingException var11) {
-            var11.printStackTrace();
-        } catch (IllegalBlockSizeException var12) {
-            var12.printStackTrace();
-        }
-        return encrypted;
-    }
 
     public static String encodeString(String s) {
         byte[] data = new byte[0];

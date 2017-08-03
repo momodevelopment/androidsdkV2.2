@@ -15,9 +15,6 @@ import java.util.TimerTask;
 
 import vn.momo.momo_partner.R;
 
-/**
- * Created by toan.dang on 10/26/16.
- */
 public class MoMoLoading {
 
     public static Dialog dialogProcessBar;
