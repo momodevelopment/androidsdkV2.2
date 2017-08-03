@@ -2,7 +2,6 @@ package momo.momo_partner.demo;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +15,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.momo.momo_partner.AppMoMoLib;
 import vn.momo.momo_partner.MoMoParameterNamePayment;
-import vn.momo.momo_partner.utils.MoMoConfig;
 
 public class PaymentActivity extends Activity {
     @BindView(R.id.tvEnvironment)
@@ -127,18 +125,8 @@ public class PaymentActivity extends Activity {
                 if(data.getIntExtra("status", -1) == 0) {
                     tvMessage.setText("message: " + "Get token " + data.getStringExtra("message"));
 
-
-                    Bundle dataServer = data.getExtras();
                     if(data.getStringExtra("data") != null && !data.getStringExtra("data").equals("")) {
                         // TODO:
-//                        return ServerProceedToCheckout.sendRequestPaymentOrder(isProduction,userPhonenumber,token,ClientUtils.getPreferences(activity,ClientConfig.KEY_USER_EMAIL),Integer.valueOf(ClientUtils.getPreferences(activity,ClientConfig.KEY_AMOUNT)),Integer.valueOf(ClientUtils.getPreferences(activity,ClientConfig.KEY_FEE)),"your_extra");
-
-                        new ServerHttpAsyncTask(PaymentActivity.this, new ServerHttpAsyncTask.RequestToServerListener() {
-                            @Override
-                            public void receiveResultFromServer(String var1) {
-
-                            }
-                        }, dataServer, MoMoConfig.MOMO_WEB_SDK_PAYONE_BILL).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                     } else {
                         tvMessage.setText("message: " + this.getString(R.string.not_receive_info));
