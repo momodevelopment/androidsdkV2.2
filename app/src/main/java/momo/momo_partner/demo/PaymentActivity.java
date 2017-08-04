@@ -36,7 +36,7 @@ public class PaymentActivity extends Activity {
     private String merchantCode = "CGV19072017";
     private String merchantNameLabel = "Nhà cung cấp";
     private String description = "Fast & Furious 8";
-    private String MOMO_WEB_SDK_DEV = "http://10.10.10.171:8080/sdk/api/v1/payment/request";//debug
+    private String MOMO_WEB_SDK_DEV = "http://118.69.187.119:9090/sdk/api/v1/payment/request";//debug
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
