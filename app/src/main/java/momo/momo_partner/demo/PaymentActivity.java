@@ -79,7 +79,7 @@ public class PaymentActivity extends Activity {
         eventValue.put(MoMoParameterNamePayment.MERCHANT_NAME_LABEL, merchantNameLabel);
 
         //client call webview
-        eventValue.put(MoMoParameterNamePayment.REQUEST_ID,  merchantCode+"-req-28nyli"+ System.currentTimeMillis());
+        eventValue.put(MoMoParameterNamePayment.REQUEST_ID,  merchantCode+"-"+ UUID.randomUUID().toString());
         eventValue.put(MoMoParameterNamePayment.PARTNER_CODE, "CGV19072017");
 
         JSONObject objExtraData = new JSONObject();
