@@ -108,6 +108,11 @@ void onActivityResult(int requestCode, int resultCode, Intent data) {
                     tvMessage.setText("message: " + "Get token " + data.getStringExtra("message"));
                     String token = data.getStringExtra("data"); //Token response 
                     String phoneNumber = data.getStringExtra("phonenumber");
+                    String env = data.getStringExtra("env");
+                    if(env == null){
+                        env = "app";
+                    }
+                    
                     if(token != null && !token.equals("")) {
                         // TODO: send phoneNumber & token to your server side to process payment with MoMo server
                         // IF Momo topup success, continue to process your order
