@@ -17,6 +17,13 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/momoclose"/>
+
+            <ImageView
+                android:id="@+id/imgBack"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:src="@drawable/momo_back"/>
         </LinearLayout>
 
         <TextView
@@ -29,6 +36,7 @@
             android:textSize="16sp"
             android:maxLines="1"
             android:layout_weight="1"/>
+
 
         <LinearLayout
             android:id="@+id/lnReload"
@@ -48,5 +56,11 @@
         android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></WebView>
+
+    <WebView
+        android:id="@+id/webViewMapBank"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"></WebView>
 
 </LinearLayout>

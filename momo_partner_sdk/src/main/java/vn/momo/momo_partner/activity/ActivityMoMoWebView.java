@@ -9,8 +9,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +29,15 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+
 import vn.momo.momo_partner.ClientHttpAsyncTask;
 import vn.momo.momo_partner.MoMoParameterNamePayment;
 import vn.momo.momo_partner.R;
@@ -40,7 +51,7 @@ import vn.momo.momo_partner.utils.MoMoUtils;
 
 public class ActivityMoMoWebView extends Activity{
 
-    private  static  WebView webView;
+    private  static  WebView webView, webViewMapBank;
     LinearLayout lnBack, lnReload;
     TextView tvTitle;
     ImageView imgReload;
@@ -48,7 +59,8 @@ public class ActivityMoMoWebView extends Activity{
     Bundle dataExtra = null;
     String jsonData = "";
     String urlRequest = "";
-    ImageView imgClose;
+    ImageView imgClose,imgBack;
+    boolean isLoadBank = false;
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +68,7 @@ public class ActivityMoMoWebView extends Activity{
 
         setContentView(R.layout.momo_webview_activity);
         imgClose = (ImageView)findViewById(R.id.imgClose);
+        imgBack = (ImageView)findViewById(R.id.imgBack);
         dataExtra = getIntent().getExtras();
         if(dataExtra != null){
             webURL = dataExtra.getString(MoMoConfig.INTENT_URL_WEB);
@@ -64,6 +77,7 @@ public class ActivityMoMoWebView extends Activity{
         }
 
         webView = (WebView)findViewById(R.id.webView);
+        webViewMapBank = (WebView)findViewById(R.id.webViewMapBank);
 
         lnBack = (LinearLayout)findViewById(R.id.lnBack);
         lnReload = (LinearLayout)findViewById(R.id.lnReload);
@@ -102,6 +116,29 @@ public class ActivityMoMoWebView extends Activity{
                 finish();
             }
         });
+
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                webViewMapBank.setVisibility(View.GONE);
+                webView.setVisibility(View.VISIBLE);
+                webView.reload();
+
+                long duration = 3000; // 3 seconds
+                long tick = 100; // 0.1 seconds;
+                new CountDownTimer(duration, tick) {
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+                    public void onFinish() {
+                        imgBack.setVisibility(View.GONE);
+                        imgClose.setVisibility(View.VISIBLE);
+                    }
+                }.start();
+
+            }
+        });
+
         lnReload.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -184,6 +221,7 @@ public class ActivityMoMoWebView extends Activity{
         super.onResume();
     }
 
+    String urlTemp = "";
 
     public class myWebViewClient extends WebViewClient {
         @Override
@@ -206,12 +244,43 @@ public class ActivityMoMoWebView extends Activity{
             MoMoLoading.showLoading(ActivityMoMoWebView.this);
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // TODO Auto-generated method stub
             view.setVisibility(View.VISIBLE);
-            if(url.contains("payment.momo.vn/callbacksdk")){
+            urlTemp = "";
+            if(!url.startsWith("http") && url.contains("://") && !url.contains("market://")){
+                webViewMapBank.loadUrl("javascript:( function () { var resultSrc = document.getElementById(\"image\").getAttribute(\"src\"); window.HTMLOUT.someCallback(resultSrc); } ) ()");
+                ArrayList<String> arrData = handleUrlCallbackBrowse(url);
+                urlTemp = arrData.get(1);
+                isLoadBank = true;
+                webView.setVisibility(View.GONE);
+                webViewMapBank.setVisibility(View.VISIBLE);
+                imgBack.setVisibility(View.VISIBLE);
+                imgClose.setVisibility(View.GONE);
+
+                WebSettings webSettings = webViewMapBank.getSettings();
+                webSettings.setJavaScriptEnabled(true);
+                webSettings.setDomStorageEnabled(true);
+                webSettings.setAppCacheEnabled(true);
+                webSettings.setAllowFileAccessFromFileURLs(true);
+                webSettings.setAllowUniversalAccessFromFileURLs(true);
+                webSettings.setDatabaseEnabled(true);
+                webViewMapBank.clearCache(true);
+                webViewMapBank.clearHistory();
+                webViewMapBank.setWebViewClient(new myWebViewClientAddScript());
+                webViewMapBank.requestFocus();
+                webViewMapBank.loadUrl(arrData.get(0));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//         This line enable webview inspect from chrome while debugging.
+//         open chrome -> go to "chrome://inspect" -> connect your device and debug.
+                    webViewMapBank.setWebContentsDebuggingEnabled(true);
+                }
+            }
+            else if(url.contains("payment.momo.vn/callbacksdk")){
                 //todo
+                isLoadBank = false;
                 handleUrlCallback(url);
             }
             return true;
@@ -227,6 +296,138 @@ public class ActivityMoMoWebView extends Activity{
         }
 
     }
+
+    public class myWebViewClientAddScript extends WebViewClient {
+
+        @Override
+        public void onPageFinished(final WebView view, final String url) {
+            if(isLoadBank && !urlTemp.equals("")){
+//                webViewMapBank.loadUrl(url);
+
+                isLoadBank = false;
+                new ClientHttpAsyncTaskBack(ActivityMoMoWebView.this, urlTemp, view).execute();
+                view.loadUrl("javascript:setTimeout(test(), 300)");
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//         This line enable webview inspect from chrome while debugging.
+//         open chrome -> go to "chrome://inspect" -> connect your device and debug.
+                    webViewMapBank.setWebContentsDebuggingEnabled(true);
+                }
+            }
+            try{
+                super.onPageFinished(view, url);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            // TODO Auto-generated method stub
+            super.onPageStarted(view, url, favicon);
+            if(!url.startsWith("http") && url.contains("://")){
+                return;
+            }
+            Uri uri = Uri.parse(url);
+            if(tvTitle != null)
+                tvTitle.setText(uri.getScheme()+"://"+uri.getHost() +":"+ uri.getPort());
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            // TODO Auto-generated method stub
+            return true;
+        }
+
+
+
+        @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+
+        }
+        @Override
+        public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+            super.doUpdateVisitedHistory(view, url, isReload);
+        }
+
+    }
+
+    public class ClientHttpAsyncTaskBack extends AsyncTask<Void, Void, String> {
+        private Activity activity;
+        private String urlEndPoint;
+        WebView wbBank;
+
+        public ClientHttpAsyncTaskBack(Activity activity, String urlEndPoint, WebView wbBank) {
+            this.activity = activity;
+            this.urlEndPoint = urlEndPoint;
+            this.wbBank = wbBank;
+        }
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        protected String doInBackground(Void... params) {
+            try {
+                String fullString = "";
+                URL url = new URL(this.urlEndPoint);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    fullString += line;
+                }
+                return fullString;
+            } catch (Exception var7) {
+                Log.d("ERROR REQUEST TO SERVER", var7.toString());
+            }
+            return "";
+        }
+
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            try {
+                InputStream inputStream = new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8));
+                byte[] buffer = new byte[inputStream.available()];
+                inputStream.read(buffer);
+                inputStream.close();
+                // String-ify the script byte-array using BASE64 encoding !!!
+                String encoded = Base64.encodeToString(buffer, Base64.NO_WRAP);
+                this.wbBank.loadUrl("javascript:(function() {" +
+                        "var parent = document.getElementsByTagName('head').item(0);" +
+                        "var script = document.createElement('script');" +
+                        "script.type = 'text/javascript';" +
+                        // Tell the browser to BASE64-decode the string into your script !!!
+                        "script.innerHTML = window.atob('" + encoded + "');" +
+                        "parent.appendChild(script)" +
+                        "})()");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private ArrayList<String> handleUrlCallbackBrowse(String mUrl) {
+        ArrayList<String> arrData = new ArrayList<>();
+        if(mUrl != null &&  mUrl.contains("&")){
+            for (String param : mUrl.split("&")) {
+                try{
+                    if(param.contains("=")){
+                        String valueParam = param.substring(param.indexOf("=") + 1);
+                        arrData.add(valueParam);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        return arrData;
+    }
+
 
     private void handleUrlCallback(String mUrl){
         Intent intent = new Intent();
