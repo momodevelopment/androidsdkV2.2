@@ -296,11 +296,6 @@ public class ActivityMoMoWebView extends Activity{
                 webViewMapBank.setWebViewClient(new myWebViewClientAddScript());
                 webViewMapBank.requestFocus();
                 webViewMapBank.loadUrl(orginalUrl);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//         This line enable webview inspect from chrome while debugging.
-//         open chrome -> go to "chrome://inspect" -> connect your device and debug.
-                    webViewMapBank.setWebContentsDebuggingEnabled(true);
-                }
             }
             else if(url.contains("payment.momo.vn/callbacksdk") || url.startsWith("close://")){
                 //todo
@@ -330,17 +325,10 @@ public class ActivityMoMoWebView extends Activity{
         @Override
         public void onPageFinished(final WebView view, final String url) {
             if(isLoadBank && !urlTemp.equals("")){
-//                webViewMapBank.loadUrl(url);
-
                 isLoadBank = false;
-                new ClientHttpAsyncTaskBack(ActivityMoMoWebView.this, urlTemp, view).execute();
-                view.loadUrl("javascript:setTimeout(test(), 300)");
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//         This line enable webview inspect from chrome while debugging.
-//         open chrome -> go to "chrome://inspect" -> connect your device and debug.
-                    webViewMapBank.setWebContentsDebuggingEnabled(true);
-                }
+                webViewMapBank.loadUrl("javascript:(function() {" +
+                                " var newScript = document.createElement('script'); newScript.type = 'text/javascript'; newScript.src = '"+ urlTemp +"' ; document.head.appendChild(newScript); " +
+                                "})()");
             }
             try{
                 super.onPageFinished(view, url);
@@ -358,7 +346,7 @@ public class ActivityMoMoWebView extends Activity{
             }
             Uri uri = Uri.parse(url);
             if(tvTitle != null)
-                tvTitle.setText(uri.getScheme()+"://"+uri.getHost() +":"+ uri.getPort());
+                tvTitle.setText(uri.getScheme()+"://"+uri.getHost());
         }
 
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
