@@ -250,10 +250,34 @@ public class ActivityMoMoWebView extends Activity{
             // TODO Auto-generated method stub
             view.setVisibility(View.VISIBLE);
             urlTemp = "";
-            if(!url.startsWith("http") && url.contains("://") && !url.contains("market://")){
+            if(!url.startsWith("http") && url.contains("://") && !url.contains("market://") &&  !url.contains("close://")){
                 webViewMapBank.loadUrl("javascript:( function () { var resultSrc = document.getElementById(\"image\").getAttribute(\"src\"); window.HTMLOUT.someCallback(resultSrc); } ) ()");
-                ArrayList<String> arrData = handleUrlCallbackBrowse(url);
-                urlTemp = arrData.get(1);
+                JSONObject param = getParamFromUrl(url);
+                String orginalUrl = "";
+
+                if (param.isNull("bankUrl")){
+                    //Do not anything
+                }else{
+                    try {
+                        orginalUrl = (String) param.get("bankUrl");//  arrData.get(1); (String)
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                if (param.isNull("bankScript")){
+                    //Do not anything
+
+                }else{
+                    try {
+                        urlTemp = (String) param.get("bankScript");//  arrData.get(1); (String)
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
                 isLoadBank = true;
                 webView.setVisibility(View.GONE);
                 webViewMapBank.setVisibility(View.VISIBLE);
@@ -271,17 +295,21 @@ public class ActivityMoMoWebView extends Activity{
                 webViewMapBank.clearHistory();
                 webViewMapBank.setWebViewClient(new myWebViewClientAddScript());
                 webViewMapBank.requestFocus();
-                webViewMapBank.loadUrl(arrData.get(0));
+                webViewMapBank.loadUrl(orginalUrl);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //         This line enable webview inspect from chrome while debugging.
 //         open chrome -> go to "chrome://inspect" -> connect your device and debug.
                     webViewMapBank.setWebContentsDebuggingEnabled(true);
                 }
             }
-            else if(url.contains("payment.momo.vn/callbacksdk")){
+            else if(url.contains("payment.momo.vn/callbacksdk") || url.startsWith("close://")){
                 //todo
                 isLoadBank = false;
                 handleUrlCallback(url);
+            }
+            else  if (url.startsWith("market://")){
+                startActivity(new Intent("android.intent.action.VIEW", Uri.parse(url)));
+
             }
             return true;
         }
@@ -426,6 +454,25 @@ public class ActivityMoMoWebView extends Activity{
             }
         }
         return arrData;
+    }
+    
+    private JSONObject getParamFromUrl(String mUrl) {
+        JSONObject jsonData = new JSONObject();
+        if(mUrl != null &&  mUrl.contains("&")){
+            for (String param : mUrl.split("&")) {
+                try{
+                    if(param.contains("=")){
+                        String key = param.substring(0,param.indexOf("="));
+                        String valueParam = param.substring(param.indexOf("=") + 1);
+                        jsonData.put(key, valueParam);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        return jsonData;
     }
 
 
