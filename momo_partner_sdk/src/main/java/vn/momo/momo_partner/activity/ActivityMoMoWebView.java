@@ -207,11 +207,11 @@ public class ActivityMoMoWebView extends Activity{
         webView.requestFocus();
         webView.loadUrl(webURL);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //         This line enable webview inspect from chrome while debugging.
 //         open chrome -> go to "chrome://inspect" -> connect your device and debug.
-            webView.setWebContentsDebuggingEnabled(true);
-        }
+//            webView.setWebContentsDebuggingEnabled(true);
+//        }
     }
 
 
@@ -240,7 +240,7 @@ public class ActivityMoMoWebView extends Activity{
             super.onPageStarted(view, url, favicon);
             Uri uri = Uri.parse(url);
             if(tvTitle != null)
-                tvTitle.setText(uri.getScheme()+"://"+uri.getHost() +":"+ uri.getPort());
+                tvTitle.setText(uri.getScheme()+"://"+uri.getHost());
             MoMoLoading.showLoading(ActivityMoMoWebView.this);
         }
 
