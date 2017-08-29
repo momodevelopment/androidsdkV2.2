@@ -44,7 +44,7 @@ private String merchantName = "CGV Cinemas";
 private String merchantCode = "CGV19072017";
 private String merchantNameLabel = "Nhà cung cấp";
 private String description = "Fast & Furious 8";
-private String MOMO_WEB_SDK_DEV = "http://118.69.187.119:9090/sdk/api/v1/payment/request";//debug
+private String MOMO_WEB_SDK_DEV = "https://payment.momo.vn:18088/sdk/api/v1/payment/request";//development http://118.69.187.119:9090/sdk/api/v1/payment/request
     
 void onCreate(Bundle savedInstanceState) 
         AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT); // AppMoMoLib.ENVIRONMENT.PRODUCTION
