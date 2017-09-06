@@ -52,7 +52,7 @@ import vn.momo.momo_partner.utils.MoMoUtils;
 public class ActivityMoMoWebView extends Activity{
 
     private  static  WebView webView, webViewMapBank;
-    LinearLayout lnBack, lnReload;
+    LinearLayout lnBack, lnReload,ll_progressbar_circle;
     TextView tvTitle;
     ImageView imgReload;
     String webURL = "";
@@ -81,6 +81,7 @@ public class ActivityMoMoWebView extends Activity{
 
         lnBack = (LinearLayout)findViewById(R.id.lnBack);
         lnReload = (LinearLayout)findViewById(R.id.lnReload);
+        ll_progressbar_circle = (LinearLayout)findViewById(R.id.ll_progressbar_circle);
         tvTitle = (TextView)findViewById(R.id.tvTitle);
         imgReload = (ImageView)findViewById(R.id.imgReload);
         lnBack.setOnTouchListener(new View.OnTouchListener() {
@@ -121,6 +122,7 @@ public class ActivityMoMoWebView extends Activity{
             @Override
             public void onClick(View view) {
                 webViewMapBank.setVisibility(View.GONE);
+                ll_progressbar_circle.setVisibility(View.GONE);
                 webView.setVisibility(View.VISIBLE);
                 webView.reload();
 
@@ -207,11 +209,11 @@ public class ActivityMoMoWebView extends Activity{
         webView.requestFocus();
         webView.loadUrl(webURL);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //         This line enable webview inspect from chrome while debugging.
 //         open chrome -> go to "chrome://inspect" -> connect your device and debug.
-            webView.setWebContentsDebuggingEnabled(true);
-        }
+//            webView.setWebContentsDebuggingEnabled(true);
+//        }
     }
 
 
@@ -240,7 +242,7 @@ public class ActivityMoMoWebView extends Activity{
             super.onPageStarted(view, url, favicon);
             Uri uri = Uri.parse(url);
             if(tvTitle != null)
-                tvTitle.setText(uri.getScheme()+"://"+uri.getHost() +":"+ uri.getPort());
+                tvTitle.setText(uri.getScheme()+"://"+uri.getHost());
             MoMoLoading.showLoading(ActivityMoMoWebView.this);
         }
 
@@ -250,12 +252,41 @@ public class ActivityMoMoWebView extends Activity{
             // TODO Auto-generated method stub
             view.setVisibility(View.VISIBLE);
             urlTemp = "";
-            if(!url.startsWith("http") && url.contains("://") && !url.contains("market://")){
+            if(!url.startsWith("http") && url.contains("://") && !url.contains("market://") &&  !url.contains("close://")){
                 webViewMapBank.loadUrl("javascript:( function () { var resultSrc = document.getElementById(\"image\").getAttribute(\"src\"); window.HTMLOUT.someCallback(resultSrc); } ) ()");
-                ArrayList<String> arrData = handleUrlCallbackBrowse(url);
-                urlTemp = arrData.get(1);
+
+
+
+
+                JSONObject param = getParamFromUrl(url);
+                String orginalUrl = "";
+
+                if (param.isNull("bankUrl")){
+                    //Do not anything
+                }else{
+                    try {
+                        orginalUrl = (String) param.get("bankUrl");//  arrData.get(1); (String)
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                if (param.isNull("bankScript")){
+                    //Do not anything
+
+                }else{
+                    try {
+                        urlTemp = (String) param.get("bankScript");//  arrData.get(1); (String)
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
                 isLoadBank = true;
                 webView.setVisibility(View.GONE);
+                ll_progressbar_circle.setVisibility(View.VISIBLE);
                 webViewMapBank.setVisibility(View.VISIBLE);
                 imgBack.setVisibility(View.VISIBLE);
                 imgClose.setVisibility(View.GONE);
@@ -271,17 +302,16 @@ public class ActivityMoMoWebView extends Activity{
                 webViewMapBank.clearHistory();
                 webViewMapBank.setWebViewClient(new myWebViewClientAddScript());
                 webViewMapBank.requestFocus();
-                webViewMapBank.loadUrl(arrData.get(0));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//         This line enable webview inspect from chrome while debugging.
-//         open chrome -> go to "chrome://inspect" -> connect your device and debug.
-                    webViewMapBank.setWebContentsDebuggingEnabled(true);
-                }
+                webViewMapBank.loadUrl(orginalUrl);
             }
-            else if(url.contains("payment.momo.vn/callbacksdk")){
+            else if(url.contains("payment.momo.vn/callbacksdk") || url.startsWith("close://")){
                 //todo
                 isLoadBank = false;
                 handleUrlCallback(url);
+            }
+            else  if (url.startsWith("market://")){
+                startActivity(new Intent("android.intent.action.VIEW", Uri.parse(url)));
+
             }
             return true;
         }
@@ -302,17 +332,8 @@ public class ActivityMoMoWebView extends Activity{
         @Override
         public void onPageFinished(final WebView view, final String url) {
             if(isLoadBank && !urlTemp.equals("")){
-//                webViewMapBank.loadUrl(url);
-
                 isLoadBank = false;
                 new ClientHttpAsyncTaskBack(ActivityMoMoWebView.this, urlTemp, view).execute();
-                view.loadUrl("javascript:setTimeout(test(), 300)");
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//         This line enable webview inspect from chrome while debugging.
-//         open chrome -> go to "chrome://inspect" -> connect your device and debug.
-                    webViewMapBank.setWebContentsDebuggingEnabled(true);
-                }
             }
             try{
                 super.onPageFinished(view, url);
@@ -330,7 +351,7 @@ public class ActivityMoMoWebView extends Activity{
             }
             Uri uri = Uri.parse(url);
             if(tvTitle != null)
-                tvTitle.setText(uri.getScheme()+"://"+uri.getHost() +":"+ uri.getPort());
+                tvTitle.setText(uri.getScheme()+"://"+uri.getHost());
         }
 
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -387,6 +408,10 @@ public class ActivityMoMoWebView extends Activity{
 
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            ll_progressbar_circle.setVisibility(View.GONE);
+            if (urlTemp.length() > 0){
+                webViewMapBank.loadUrl("javascript:setTimeout(test(), 300)");
+            }
             try {
                 InputStream inputStream = new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8));
                 byte[] buffer = new byte[inputStream.available()];
@@ -426,6 +451,25 @@ public class ActivityMoMoWebView extends Activity{
             }
         }
         return arrData;
+    }
+
+    private JSONObject getParamFromUrl(String mUrl) {
+        JSONObject jsonData = new JSONObject();
+        if(mUrl != null &&  mUrl.contains("&")){
+            for (String param : mUrl.split("&")) {
+                try{
+                    if(param.contains("=")){
+                        String key = param.substring(0,param.indexOf("="));
+                        String valueParam = param.substring(param.indexOf("=") + 1);
+                        jsonData.put(key, valueParam);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        return jsonData;
     }
 
 
