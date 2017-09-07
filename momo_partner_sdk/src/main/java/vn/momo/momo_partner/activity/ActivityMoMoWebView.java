@@ -291,8 +291,11 @@ public class ActivityMoMoWebView extends Activity{
                 webSettings.setJavaScriptEnabled(true);
                 webSettings.setDomStorageEnabled(true);
                 webSettings.setAppCacheEnabled(true);
-                webSettings.setAllowFileAccessFromFileURLs(true);
-                webSettings.setAllowUniversalAccessFromFileURLs(true);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    webSettings.setAllowFileAccessFromFileURLs(true);
+                    webSettings.setAllowUniversalAccessFromFileURLs(true);
+                }
+
                 webSettings.setDatabaseEnabled(true);
                 webViewMapBank.clearCache(false);
                 webViewMapBank.clearHistory();
