@@ -51,7 +51,7 @@ import vn.momo.momo_partner.utils.MoMoUtils;
 
 /**
  * Created by hungdo on 7/14/17.
- * Updated by LanhLuu on Sep 9, /2017
+ * Updated by Lanh Luu on Sep 9, /2017
  */
 
 public class ActivityMoMoWebView extends Activity{
