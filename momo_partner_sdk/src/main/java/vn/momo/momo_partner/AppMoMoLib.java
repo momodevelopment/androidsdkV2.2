@@ -154,6 +154,7 @@ public class AppMoMoLib{
                 activity.startActivityForResult(intent[0], REQUEST_CODE_MOMO);
             }else {
                 //call web payment
+                /*
                 if(MoMoWebSDK == null || MoMoWebSDK.equals("")){
                     Toast.makeText(activity, "Please input request URL", Toast.LENGTH_LONG).show();
                     return;
@@ -169,7 +170,8 @@ public class AppMoMoLib{
                 }else{
                     //call download app
                     handleCallGooglePlay(activity, packageClass);
-                }
+                } */
+                handleCallGooglePlay(activity, packageClass);
             }
         }catch (Exception e){
             e.printStackTrace();
