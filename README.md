@@ -40,12 +40,12 @@ import vn.momo.momo_partner.MoMoParameterNameMap;
 private String amount = "10000";
 private String fee = "0";
 int environment = 0;//developer default
-private String merchantName = "CGV Cinemas";
-private String merchantCode = "CGV19072017";
+private String merchantName = "Demo SDK";
+private String merchantCode = "SCB01";
 private String merchantNameLabel = "Nhà cung cấp";
-private String description = "Fast & Furious 8";
-private String MOMO_WEB_SDK_DEV = "https://payment.momo.vn:18088/sdk/api/v1/payment/request";//development http://118.69.187.119:9090/sdk/api/v1/payment/request
-    
+private String description = "Thanh toán dịch vụ ABC";
+private String MOMO_WEB_SDK_DEV = "https://payment.momo.vn:18088/sdk/api/v1/payment/request";
+
 void onCreate(Bundle savedInstanceState) 
         AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT); // AppMoMoLib.ENVIRONMENT.PRODUCTION
 ```
@@ -73,7 +73,7 @@ private void requestPayment() {
 
         //client call webview
         eventValue.put(MoMoParameterNamePayment.REQUEST_ID,  merchantCode+"-req-28nyli"+ System.currentTimeMillis());
-        eventValue.put(MoMoParameterNamePayment.PARTNER_CODE, "CGV19072017");
+        eventValue.put(MoMoParameterNamePayment.PARTNER_CODE, merchantCode);
 
         JSONObject objExtraData = new JSONObject();
         try {
