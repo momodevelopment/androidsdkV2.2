@@ -44,7 +44,6 @@ private String merchantName = "Demo SDK";
 private String merchantCode = "SCB01";
 private String merchantNameLabel = "Nhà cung cấp";
 private String description = "Thanh toán dịch vụ ABC";
-private String MOMO_WEB_SDK_DEV = "https://payment.momo.vn:18088/sdk/api/v1/payment/request";
 
 void onCreate(Bundle savedInstanceState) 
         AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT); // AppMoMoLib.ENVIRONMENT.PRODUCTION
