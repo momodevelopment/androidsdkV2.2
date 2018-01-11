@@ -5,9 +5,9 @@ package vn.momo.momo_partner.utils;
  */
 
 public class MoMoConfig {
-    public static final String MOMO_APP_PAKAGE_CLASS_PRODUCTION = "com.mservice.momotransfer"; //production
-    public static final String MOMO_APP_PAKAGE_CLASS_DEBUG = "com.mservice.debug";//debug
-    public static final String MOMO_APP_PAKAGE_CLASS_DEVELOPER = "com.mservice";//dev
+    public static final String MOMO_APP_PAKAGE_CLASS_PRODUCTION = "momo"; //"com.mservice.momotransfer"; //production
+    public static final String MOMO_APP_PAKAGE_CLASS_DEBUG = "momo";
+    public static final String MOMO_APP_PAKAGE_CLASS_DEVELOPER = "momo";
 
 
     public static final String ACTION_SDK = "com.android.momo.SDK";//action mapping
