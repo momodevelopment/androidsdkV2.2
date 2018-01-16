@@ -16,11 +16,11 @@ import butterknife.OnClick;
 public class MainActivity extends Activity {
 
 
-    int environment = 1;//developer default
-    @BindView(R.id.rdEnvironmentDebug)
-    RadioButton rdEnvironmentDebug;
-    @BindView(R.id.rdEnvironmentDeveloper)
-    RadioButton rdEnvironmentDeveloper;
+    int environment = 1;//developer default - Production environment = 2
+//    @BindView(R.id.rdEnvironmentDebug)
+//    RadioButton rdEnvironmentDebug;
+//    @BindView(R.id.rdEnvironmentDeveloper)
+//    RadioButton rdEnvironmentDeveloper;
     @BindView(R.id.rdEnvironmentProduction)
     RadioButton rdEnvironmentProduction;
     @BindView(R.id.rdGroupEnvironment)
@@ -39,13 +39,13 @@ public class MainActivity extends Activity {
         rdGroupEnvironment.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int checkedId) {
-                if (checkedId == R.id.rdEnvironmentDebug) {
-                    environment = 0;
-                }else if (checkedId == R.id.rdEnvironmentDeveloper) {
-                    environment = 1;
-                }else if (checkedId == R.id.rdEnvironmentProduction) {
-                    environment = 2;
-                }
+//                if (checkedId == R.id.rdEnvironmentDebug) {
+//                    environment = 0;
+//                }else if (checkedId == R.id.rdEnvironmentDeveloper) {
+//                    environment = 1;
+//                }else if (checkedId == R.id.rdEnvironmentProduction) {
+//                    environment = 2;
+//                }
             }
         });
     }

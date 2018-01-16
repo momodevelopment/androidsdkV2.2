@@ -171,7 +171,7 @@ public class AppMoMoLib{
                     //call download app
                     handleCallGooglePlay(activity, packageClass);
                 } */
-                handleCallGooglePlay(activity, packageClass);
+                handleCallGooglePlay(activity, MoMoConfig.MOMO_APP_PAKAGE_STORE_DOWNLOAD);
             }
         }catch (Exception e){
             e.printStackTrace();

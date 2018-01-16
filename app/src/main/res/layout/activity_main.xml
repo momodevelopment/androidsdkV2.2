@@ -13,28 +13,13 @@
             android:id="@+id/rdGroupEnvironment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <RadioButton
-                android:id="@+id/rdEnvironmentDebug"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="Debug Environment" />
-
-            <RadioButton
-                android:id="@+id/rdEnvironmentDeveloper"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Developer Environment" />
-
             <RadioButton
                 android:id="@+id/rdEnvironmentProduction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Production Environment" />
+                android:checked="true"
+                android:text="Developement Environment" />
         </RadioGroup>
 
         <Button
