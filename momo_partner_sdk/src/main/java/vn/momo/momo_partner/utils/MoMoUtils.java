@@ -26,32 +26,6 @@ import javax.crypto.NoSuchPaddingException;
 
 public class MoMoUtils {
     public static String getIPAddress(boolean useIPv4) {
-        try {
-            ArrayList ex = Collections.list(NetworkInterface.getNetworkInterfaces());
-            Iterator i$ = ex.iterator();
-            while(i$.hasNext()) {
-                NetworkInterface intf = (NetworkInterface)i$.next();
-                ArrayList addrs = Collections.list(intf.getInetAddresses());
-                Iterator i$1 = addrs.iterator();
-                while(i$1.hasNext()) {
-                    InetAddress addr = (InetAddress)i$1.next();
-                    if(!addr.isLoopbackAddress()) {
-                        String sAddr = addr.getHostAddress().toUpperCase();
-                        boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
-                        if(useIPv4) {
-                            if(isIPv4) {
-                                return sAddr;
-                            }
-                        } else if(!isIPv4) {
-                            int delim = sAddr.indexOf(37);
-                            return delim < 0?sAddr:sAddr.substring(0, delim);
-                        }
-                    }
-                }
-            }
-        } catch (Exception var10) {
-
-        }
         return "0.0.0.0";
     }
 
