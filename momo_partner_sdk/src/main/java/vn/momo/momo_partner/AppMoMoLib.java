@@ -153,24 +153,6 @@ public class AppMoMoLib{
                 intent[0].putExtra("JSON_PARAM", jsonData.toString());
                 activity.startActivityForResult(intent[0], REQUEST_CODE_MOMO);
             }else {
-                //call web payment
-                /*
-                if(MoMoWebSDK == null || MoMoWebSDK.equals("")){
-                    Toast.makeText(activity, "Please input request URL", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if(action.equals(MoMoConfig.ACTION_PAYMENT)){
-                    final String finalMoMoWebSDK = MoMoWebSDK;
-                    (new ClientHttpAsyncTask(activity, new ClientHttpAsyncTask.RequestToServerListener() {
-                        @Override
-                        public void receiveResultFromServer(String param) {
-                            handleWebView(activity, param, packageClass, jsonData.toString(), finalMoMoWebSDK);
-                        }
-                    }, jsonData.toString(), MoMoWebSDK, true)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                }else{
-                    //call download app
-                    handleCallGooglePlay(activity, packageClass);
-                } */
                 handleCallGooglePlay(activity, MoMoConfig.MOMO_APP_PAKAGE_STORE_DOWNLOAD);
             }
         }catch (Exception e){
