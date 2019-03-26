@@ -89,8 +89,6 @@ private void requestPayment() {
         eventValue.put(MoMoParameterNamePayment.EXTRA_DATA, objExtraData.toString());
         eventValue.put(MoMoParameterNamePayment.REQUEST_TYPE, "payment");
         eventValue.put(MoMoParameterNamePayment.LANGUAGE, "vi");
-        eventValue.put(MoMoParameterNamePayment.SUBMIT_URL_WEB, MOMO_WEB_SDK_DEV);
-        
 
         eventValue.put(MoMoParameterNamePayment.EXTRA, "");
         AppMoMoLib.getInstance().requestMoMoCallBack(this, eventValue);
