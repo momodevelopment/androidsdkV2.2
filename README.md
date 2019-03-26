@@ -23,7 +23,7 @@ allprojects {
 Add the dependency:
 ```
 dependencies {
-	        compile 'com.github.momodevelopment:androidsdkV2.2:1.1'
+	        compile 'com.github.momodevelopment:androidsdkV2.2:2.3'
 }
 ```
  
