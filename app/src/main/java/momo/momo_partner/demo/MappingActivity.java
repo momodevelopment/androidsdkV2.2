@@ -48,10 +48,7 @@ public class MappingActivity extends Activity {
         if(data != null){
             environment = data.getInt(MoMoConstants.KEY_ENVIRONMENT);
         }
-        if(environment == 0){
-            AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEBUG);
-            tvEnvironment.setText("Development Environment");
-        }else if(environment == 1){
+        if(environment < 2){
             AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT);
             tvEnvironment.setText("Development Environment");
         }else if(environment == 2){
