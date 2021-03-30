@@ -32,13 +32,12 @@ public class PaymentActivity extends Activity {
     @BindView(R.id.btnPayMoMo)
     Button btnPayMoMo;
     private String amount = "10000";
-    private String fee = "0";
+    private String fee = "0";// view only
     int environment = 0;//developer default
     private String merchantName = "CGV Cinemas";
     private String merchantCode = "CGV19072017";
     private String merchantNameLabel = "Nhà cung cấp";
     private String description = "Fast & Furious 8";
-    private String MOMO_WEB_SDK_DEV = "http://118.69.187.119:9090/sdk/api/v1/payment/request";//debug
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +47,7 @@ public class PaymentActivity extends Activity {
         if(data != null){
             environment = data.getInt(MoMoConstants.KEY_ENVIRONMENT);
         }
-        if(environment == 0){
-            AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEBUG);
-            tvEnvironment.setText("Development Environment");
-        }else if(environment == 1){
+        if(environment < 2){
             AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT);
             tvEnvironment.setText("Development Environment");
         }else if(environment == 2){
@@ -79,11 +75,9 @@ public class PaymentActivity extends Activity {
         //client Optional
         eventValue.put(MoMoParameterNamePayment.FEE, fee);
         eventValue.put(MoMoParameterNamePayment.MERCHANT_NAME_LABEL, merchantNameLabel);
-
-        //client call webview
-        eventValue.put(MoMoParameterNamePayment.REQUEST_ID,  merchantCode+"-"+ UUID.randomUUID().toString());
         eventValue.put(MoMoParameterNamePayment.PARTNER_CODE, "CGV19072017");
-
+        eventValue.put("orderId", "123456789xxx"); //Example orderId
+        eventValue.put("requestId", "123456789xxx" + System.currentTimeMillis());//Example requestId
         JSONObject objExtraData = new JSONObject();
         try {
             objExtraData.put("site_code", "008");
@@ -99,7 +93,6 @@ public class PaymentActivity extends Activity {
         eventValue.put(MoMoParameterNamePayment.EXTRA_DATA, objExtraData.toString());
         eventValue.put(MoMoParameterNamePayment.REQUEST_TYPE, "payment");
         eventValue.put(MoMoParameterNamePayment.LANGUAGE, "vi");
-        eventValue.put(MoMoParameterNamePayment.SUBMIT_URL_WEB, MOMO_WEB_SDK_DEV);
 
         //client info custom parameter
 //        JSONObject objExtra = new JSONObject();
@@ -129,7 +122,8 @@ public class PaymentActivity extends Activity {
 
                     if(data.getStringExtra("data") != null && !data.getStringExtra("data").equals("")) {
                         // TODO:
-
+                        // data.getStringExtra("refRequestId")
+                        // data.getStringExtra("refOrderId")
                     } else {
                         tvMessage.setText("message: " + this.getString(R.string.not_receive_info));
                     }
