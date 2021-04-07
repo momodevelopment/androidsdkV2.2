@@ -99,7 +99,7 @@ public class AppMoMoLib{
             String MoMoWebSDK = null;
             switch (environment){
                 case MoMoConfig.ENVIRONMENT_DEBUG://environment debug
-                    packageClass = MoMoConfig.MOMO_APP_PAKAGE_CLASS_DEBUG;
+                    packageClass = MoMoConfig.MOMO_APP_PAKAGE_CLASS_DEVELOPER;
                     break;
                 case MoMoConfig.ENVIRONMENT_DEVELOPER://environment developer
                     packageClass = MoMoConfig.MOMO_APP_PAKAGE_CLASS_DEVELOPER;
@@ -141,7 +141,7 @@ public class AppMoMoLib{
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            jsonData.put("sdkversion", BuildConfig.VERSION_NAME);
+            jsonData.put("sdkversion", 3.0.1"");
             jsonData.put("clientIp", MoMoUtils.getIPAddress(true));
             jsonData.put("appname",appName);
             jsonData.put("packagename",packageName);
