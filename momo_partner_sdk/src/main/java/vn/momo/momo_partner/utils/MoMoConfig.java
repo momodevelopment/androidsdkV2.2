@@ -8,7 +8,7 @@ public class MoMoConfig {
     public static final String MOMO_APP_PAKAGE_STORE_DOWNLOAD = "com.mservice.momotransfer";
 
     public static final String MOMO_APP_PAKAGE_CLASS_PRODUCTION = "com.mservice.momotransfer"; //production
-    public static final String MOMO_APP_PAKAGE_CLASS_DEBUG = "com.mservice.debug";//no longer supported
+    public static final String MOMO_APP_PAKAGE_CLASS_DEBUG = "vn.momo.platform.test";//no longer supported
     public static final String MOMO_APP_PAKAGE_CLASS_DEVELOPER = "vn.momo.platform.test";// App Test ver 3.0.12 or newest using id "vn.momo.platform.test", App Test ver 3.0.11 or lower using id "com.mservice";
 
     public static final String ACTION_SDK = "com.android.momo.SDK";//action mapping
